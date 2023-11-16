@@ -70,11 +70,10 @@ function ChatComponent() {
     return (
         <div>
             <h1>Chat</h1>
-            <button onClick={() => chatClient.getNextMessages()}>Get Messages</button>
             <div className="scrollable-text-view">
                 {makeFormatedMessages()}
             </div>
-
+            {user + "  "}
             <input
                 type="text"
                 id="message"
@@ -90,8 +89,10 @@ function ChatComponent() {
                     }
                 }}
             />
-           <button onClick={loadMoreMessages}>Load More Messages</button>  {/* New button to load more messages */}
+            
+             {/* New button to load more messages */}
             <button onClick={() => chatClient.sendMessage(localUser, localMessage)}>Send</button>
+            <button onClick={() => chatClient.getNextMessages()}>Get More Messages</button>
         </div>
     );
 }
