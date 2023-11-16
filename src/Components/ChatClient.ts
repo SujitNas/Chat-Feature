@@ -67,7 +67,7 @@ class ChatClient {
 
     getNextMessages() {
         const nextMessageToFetch = this.earliestMessageID - 1;
-        const pagingToken = `__${nextMessageToFetch.toString().padStart(10, '0')}__`;
+        const pagingToken = `__${nextMessageToFetch.toString().padStart(20, '0')}__`;
         this.getMessages(pagingToken);
     }
 
