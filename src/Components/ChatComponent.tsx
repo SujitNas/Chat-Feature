@@ -92,7 +92,10 @@ function ChatComponent() {
             
              {/* New button to load more messages */}
             <button onClick={() => chatClient.sendMessage(localUser, localMessage)}>Send</button>
-            <button onClick={() => chatClient.getNextMessages()}>Get More Messages</button>
+            <button onClick={() => {
+                chatClient.getNextMessages();
+                loadMoreMessages();
+            }}>Load More Messages</button>
         </div>
     );
 }
