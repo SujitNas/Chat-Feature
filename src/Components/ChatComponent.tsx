@@ -15,7 +15,7 @@ const chatClient = new ChatClient();
 
 function ChatComponent() {
     const [messages, setMessages] = useState<MessageContainer[]>([]);
-    const [mostRecentId, setMostRecentId] = useState<number>(0);
+    const [mostRecentId, setMostRecentId] = useState<number>(-1);
     const [currentPage, setCurrentPage] = useState<number>(1);  // New state for pagination
     const messagesPerPage = 20;
     const [user, setUser] = useState<string>(window.sessionStorage.getItem('userName') || "");
@@ -93,8 +93,8 @@ function ChatComponent() {
              {/* New button to load more messages */}
             <button onClick={() => chatClient.sendMessage(localUser, localMessage)}>Send</button>
             <button onClick={() => {
-                chatClient.getNextMessages();
                 loadMoreMessages();
+                chatClient.getNextMessages();
             }}>Load More Messages</button>
         </div>
     );
