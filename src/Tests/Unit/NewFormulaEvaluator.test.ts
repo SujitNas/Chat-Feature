@@ -422,6 +422,34 @@ describe("FormulaEvaluator", () => {
             });
         });
 
+        describe("when the formula is 2 asin", () => {
+            it("returns the 0", () => {
+                const formula = ["2", "asin"];
+
+                recalc.evaluate(formula);
+
+                let result = recalc.result;
+                let error = recalc.error;
+
+                expect(result).toEqual(0);
+                expect(error).toEqual(ErrorMessages.outofRange);
+            });
+        });
+
+        describe("when the formula is 5 acos", () => {
+            it("returns the 0", () => {
+                const formula = ["2", "acos"];
+
+                recalc.evaluate(formula);
+
+                let result = recalc.result;
+                let error = recalc.error;
+
+                expect(result).toEqual(0);
+                expect(error).toEqual(ErrorMessages.outofRange);
+            });
+        });
+
         describe("when the formula is 1  atan' ", () => {
             it("returns the number PI/4", () => {
                 const formula = ["1", "atan"];
