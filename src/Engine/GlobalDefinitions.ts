@@ -8,7 +8,7 @@ export const ErrorMessages = {
   invalidOperator: "#ERR",
   missingParentheses: "#ERR",
   emptyFormula: "#EMPTY!", // this is not an error message but we use it to indicate that the cell is empty
-
+  outofRange: "asin/acos must be between -1 and 1",
 }
 
 export const ButtonNames = {
