@@ -5,11 +5,11 @@ class ChatClient {
     previousMessagesFetched: boolean = false;
     messages: MessageContainer[] = [];
     updateDisplay: () => void = () => { };
-
+    private pagingToken: string = '';
     constructor() {
         console.log("ChatClient");
         this.getMessages();
-        this.getMessagesContinuously();
+        
     }
 
     setCallback(callback: () => void) {
@@ -45,30 +45,27 @@ class ChatClient {
         this.updateDisplay();
     }
 
-    getMessages(pagingToken: string = '') {
+    getMessages() {
+        
+        
         const url = `http://localhost:3005/messages/get/`;
-        const fetchURL = `${url}${pagingToken}`;
-
+        const fetchURL = this.pagingToken ? `${url}${this.pagingToken}` : url;
         fetch(fetchURL)
             .then(response => response.json())
             .then((messagesContainer: MessagesContainer) => {
                 this.insertMessages(messagesContainer.messages);
+                this.pagingToken = messagesContainer.paginationToken;
             })
+            
             .catch((error) => {
                 console.error(error);
             });
+            
     }
 
-    getMessagesContinuously() {
-        setInterval(() => {
-            this.getMessages();
-        }, 1000);
-    }
 
     getNextMessages() {
-        const nextMessageToFetch = this.earliestMessageID - 1;
-        const pagingToken = `__${nextMessageToFetch.toString().padStart(20, '0')}__`;
-        this.getMessages(pagingToken);
+        this.getMessages();
     }
 
     sendMessage(user: string, message: string) {

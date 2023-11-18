@@ -44,7 +44,7 @@ function ChatComponent() {
         const endIndex = messagesPerPage * currentPage;
         let newMessages = chatClient.messages.slice(0, endIndex);
     
-        setMessages(newMessages);
+        setMessages([...chatClient.messages]);
         setMostRecentId(newLastId);
     }, [mostRecentId, currentPage, messagesPerPage]);
 
@@ -64,7 +64,7 @@ function ChatComponent() {
         return formatedMessages;
     }
     function loadMoreMessages() {
-        setCurrentPage(currentPage + 1);  // Increment the current page to load more messages
+        chatClient.getNextMessages();  // Increment the current page to load more messages
     }
 
     return (
@@ -94,7 +94,7 @@ function ChatComponent() {
             <button onClick={() => chatClient.sendMessage(localUser, localMessage)}>Send</button>
             <button onClick={() => {
                 loadMoreMessages();
-                chatClient.getNextMessages();
+                
             }}>Load More Messages</button>
         </div>
     );
