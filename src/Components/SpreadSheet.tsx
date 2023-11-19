@@ -57,6 +57,21 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     return () => clearInterval(interval);
   });
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (currentlyEditing) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes! Are you sure you want to leave?';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [currentlyEditing]);
+
   function returnToLoginPage() {
 
     // set the document name
