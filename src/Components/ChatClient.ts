@@ -71,7 +71,7 @@ class ChatClient {
 
     sendMessage(user: string, message: string) {
         //const url = `http://localhost:3005/message/${user}/${message}`;
-        const url = 'https://team404-server.onrender.com/message/${user}/${message}';
+        const url = `https://team404-server.onrender.com/message/${user}/${message}`;
         fetch(url)
             .then(response => response.json())
             .then((messagesContainer: MessagesContainer) => {
