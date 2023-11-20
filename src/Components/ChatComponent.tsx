@@ -20,7 +20,7 @@ function ChatComponent() {
     const messagesPerPage = 20;
     const [user, setUser] = useState<string>(window.sessionStorage.getItem('userName') || "");
     // const [user, setUser] = useState<string>("Jose");
-    const [message, setMessage] = useState<string>("Hello World");
+    const [message, setMessage] = useState<string>("Type a message...");
     const bottomRef = useRef(null);
 
 
@@ -69,7 +69,7 @@ function ChatComponent() {
 
     return (
         <div>
-            <h1>Chat</h1>
+            <h1>Chats</h1>
             <div className="scrollable-text-view">
                 {makeFormatedMessages()}
             </div>
