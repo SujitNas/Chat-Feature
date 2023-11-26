@@ -48,6 +48,10 @@ export class SpreadSheetController {
   // a per access error message
   private _errorOccurred: string = '';
 
+  private _gameNumbers: number[] = [1, 2, 3, 4];
+  private _gameFormulas: string[][] = [];
+  private _gameToken: boolean = true;
+
   /**
    * constructor
    * */
@@ -160,7 +164,7 @@ export class SpreadSheetController {
     cell.setFormula(userData.formulaBuilder.getFormula());
     this._memory.setCellByLabel(cellBeingEdited!, cell);
 
-    this._calculationManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers);
   }
 
   /**  
@@ -227,7 +231,7 @@ export class SpreadSheetController {
     cell.setFormula(userEditing!.formulaBuilder.getFormula());
     this._memory.setCellByLabel(cellBeingEdited!, cell);
 
-    this._calculationManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers);
   }
 
   /**
@@ -251,7 +255,7 @@ export class SpreadSheetController {
       cell.setFormula(userEditing!.formulaBuilder.getFormula());
       this._memory.setCellByLabel(cellBeingEdited, cell);
     }
-    this._calculationManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers);
   }
 
   /**
@@ -305,6 +309,13 @@ export class SpreadSheetController {
 
   }
 
+  addGameFormula(formula: string[]){
+    this._gameFormulas.push(formula);
+  }
+
+  getGameFormula(): string[][]{
+    return this._gameFormulas;
+  }
 
   /**
    * 

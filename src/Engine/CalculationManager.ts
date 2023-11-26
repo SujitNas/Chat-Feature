@@ -13,6 +13,7 @@ import SheetMemory from "./SheetMemory";
 import Cell from "./Cell";
 import FormulaBuilder from "./FormulaBuilder";
 import FormulaEvaluator from "./NewFormulaEvaluator";
+import { ErrorMessages } from "./GlobalDefinitions";
 
 
 
@@ -24,7 +25,7 @@ export default class CalculationManager {
     // get the computation order
     // compute the cells in the computation order
     // update the cells in the sheet memory
-    public evaluateSheet(sheetMemory: SheetMemory): void {
+    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNmbers: number[]): void {
         // update the dependencies in the sheet
         this.updateDependencies(sheetMemory);
 
@@ -39,10 +40,34 @@ export default class CalculationManager {
             let currentCell = sheetMemory.getCellByLabel(cellLabel);
             let formula = currentCell.getFormula();
 
+
+            for (let i = 0; i < formula.length; i++) {
+                let currentToken = formula[i];
+                if (currentToken ) {
+                }
+            }
+
             calculator.evaluate(formula);
 
             let value = calculator.result
             let error = calculator.error;
+
+            if (gameToken && error == ""){
+                if (value != 24){
+                    value = 0;
+                    error = ErrorMessages.wrongAnswer;
+                }
+            }
+            
+
+            const numericInFormula = formula.map(Number).filter((element) => !isNaN(element));
+            const allNumbersInFormula = gameNmbers.every((numberGame) => numericInFormula.includes(numberGame));
+            const noDuplicateNumbers = new Set(numericInFormula).size === numericInFormula.length;
+
+            if ((!allNumbersInFormula || !noDuplicateNumbers) && error == ""){
+                value = 0;
+                error = ErrorMessages.repeatNumber;
+            }
 
             // update the cell in the sheet memory
             currentCell.setError(error);
