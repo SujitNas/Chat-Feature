@@ -49,7 +49,7 @@ export class SpreadSheetController {
   private _errorOccurred: string = '';
 
   private _gameNumbers: number[] = [1, 2, 3, 4];
-  private _gameFormulas: string[][] = [];
+  private _gameFormulas: Map<string, string[]> = new Map<string, string[]>;
   private _gameToken: boolean = true;
 
   /**
@@ -164,7 +164,9 @@ export class SpreadSheetController {
     cell.setFormula(userData.formulaBuilder.getFormula());
     this._memory.setCellByLabel(cellBeingEdited!, cell);
 
-    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers);
+    const gameCell = cellBeingEdited!;
+
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers, gameCell, this._gameFormulas);
   }
 
   /**  
@@ -231,7 +233,7 @@ export class SpreadSheetController {
     cell.setFormula(userEditing!.formulaBuilder.getFormula());
     this._memory.setCellByLabel(cellBeingEdited!, cell);
 
-    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers);
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers,user, this._gameFormulas);
   }
 
   /**
@@ -255,7 +257,7 @@ export class SpreadSheetController {
       cell.setFormula(userEditing!.formulaBuilder.getFormula());
       this._memory.setCellByLabel(cellBeingEdited, cell);
     }
-    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers);
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers, user, this._gameFormulas);
   }
 
   /**
@@ -292,6 +294,11 @@ export class SpreadSheetController {
     let cell = this._memory.getCellByLabel(userEditing!.cellLabel);
     let displayString = cell.getDisplayString();
 
+    if (this._gameToken && cell.getValue() == 24) {
+      const gameCell = userEditing!.cellLabel;
+      this.addGameFormula(gameCell, cell.getFormula());
+    }
+
     return displayString;
   }
 
@@ -309,11 +316,11 @@ export class SpreadSheetController {
 
   }
 
-  addGameFormula(formula: string[]){
-    this._gameFormulas.push(formula);
+  addGameFormula(cellLabel: string, formula: string[]){
+    this._gameFormulas.set(cellLabel, formula);
   }
 
-  getGameFormula(): string[][]{
+  getGameFormula(): Map<string, string[]>{
     return this._gameFormulas;
   }
 

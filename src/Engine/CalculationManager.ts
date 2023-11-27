@@ -25,7 +25,7 @@ export default class CalculationManager {
     // get the computation order
     // compute the cells in the computation order
     // update the cells in the sheet memory
-    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNmbers: number[]): void {
+    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNmbers: number[], gameCell: string, gameFormulas: Map<string, string[]>): void {
         // update the dependencies in the sheet
         this.updateDependencies(sheetMemory);
 
@@ -69,6 +69,17 @@ export default class CalculationManager {
                 error = ErrorMessages.repeatNumber;
             }
 
+            if (gameFormulas.size != 0 && !gameFormulas.has(cellLabel) && value == 24){
+                for (const [, verifiedFormula] of gameFormulas) {
+                    const formulaCheck = this.checkFormula(formula, verifiedFormula);
+
+                    if (formulaCheck) {
+                        value = 0;
+                        error = ErrorMessages.repeatFormula;
+                    }
+                  }
+            }
+
             // update the cell in the sheet memory
             currentCell.setError(error);
             currentCell.setValue(value);
@@ -76,6 +87,41 @@ export default class CalculationManager {
         }
     }
 
+    private checkFormula(formula: string[], gameFormula: string[]): boolean {
+        const operators = ["+", "-", "*", "/"];
+        let formulaOperators = [0, 0, 0, 0];
+        let gameFormulaOperators = [0, 0, 0, 0];
+        for (let i = 0; i < formula.length; i++) {
+            if (formula[i] == operators[0]) {
+                formulaOperators[0] += 1;
+            }
+            else if (formula[i] == operators[1]) {
+                formulaOperators[1] += 1;
+            }
+            else if (formula[i] == operators[2]) {
+                formulaOperators[2] += 1;
+            }
+            else if (formula[i] == operators[3]) {
+                formulaOperators[3] += 1;
+            }
+        }
+        for (let i = 0; i < gameFormula.length; i++) {
+            if (formula[i] == operators[0]) {
+                gameFormulaOperators[0] += 1;
+            }
+            else if (formula[i] == operators[1]) {
+                gameFormulaOperators[1] += 1;
+            }
+            else if (formula[i] == operators[2]) {
+                gameFormulaOperators[2] += 1;
+            }
+            else if (formula[i] == operators[3]) {
+                gameFormulaOperators[3] += 1;
+            }
+        }
+
+        return formulaOperators[0] == gameFormulaOperators[0] && formulaOperators[1] == gameFormulaOperators[1] && formulaOperators[2] == gameFormulaOperators[2] && formulaOperators[3] == gameFormulaOperators[3];
+    }
 
 
     /**
