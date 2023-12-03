@@ -9,6 +9,9 @@ export const ErrorMessages = {
   missingParentheses: "#ERR",
   emptyFormula: "#EMPTY!", // this is not an error message but we use it to indicate that the cell is empty
   outofRange: "asin/acos must be between -1 and 1",
+  wrongAnswer: "#Not 24 yet",
+  repeatNumber: "Number Issue",
+  repeatFormula: "Formula Issue"
 }
 
 export const ButtonNames = {

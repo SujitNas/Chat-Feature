@@ -48,6 +48,10 @@ export class SpreadSheetController {
   // a per access error message
   private _errorOccurred: string = '';
 
+  private _gameNumbers: number[] = [1, 2, 3, 4];
+  private _gameFormulas: Map<string, string[]> = new Map<string, string[]>;
+  private _gameToken: boolean = true;
+
   /**
    * constructor
    * */
@@ -160,7 +164,9 @@ export class SpreadSheetController {
     cell.setFormula(userData.formulaBuilder.getFormula());
     this._memory.setCellByLabel(cellBeingEdited!, cell);
 
-    this._calculationManager.evaluateSheet(this._memory);
+    const gameCell = cellBeingEdited!;
+
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers, gameCell, this._gameFormulas);
   }
 
   /**  
@@ -227,7 +233,7 @@ export class SpreadSheetController {
     cell.setFormula(userEditing!.formulaBuilder.getFormula());
     this._memory.setCellByLabel(cellBeingEdited!, cell);
 
-    this._calculationManager.evaluateSheet(this._memory);
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers,user, this._gameFormulas);
   }
 
   /**
@@ -251,8 +257,8 @@ export class SpreadSheetController {
       cell.setFormula(userEditing!.formulaBuilder.getFormula());
       this._memory.setCellByLabel(cellBeingEdited, cell);
     }
-    this._calculationManager.evaluateSheet(this._memory);
-  } 
+    this._calculationManager.evaluateSheet(this._memory, this._gameToken, this._gameNumbers, user, this._gameFormulas);
+  }
 
   /**
    * 
@@ -288,6 +294,11 @@ export class SpreadSheetController {
     let cell = this._memory.getCellByLabel(userEditing!.cellLabel);
     let displayString = cell.getDisplayString();
 
+    if (this._gameToken && cell.getValue() == 24) {
+      const gameCell = userEditing!.cellLabel;
+      this.addGameFormula(gameCell, cell.getFormula());
+    }
+
     return displayString;
   }
 
@@ -305,6 +316,32 @@ export class SpreadSheetController {
 
   }
 
+  setGameMode(): void {
+    if (!this._gameToken)
+    this._gameToken = true;
+  }
+
+  generateGameNumbers(): void {
+    this._gameNumbers = [];
+    for (let i = 0; i < 4; i++) {
+      const randomNumber = (Math.floor(Math.random() * 9) + 1);
+      if (!this._gameNumbers.includes(randomNumber)) {
+        this._gameNumbers.push(randomNumber);
+      }
+    }
+  }
+
+  getGameNumbers(): number[] {
+    return this._gameNumbers;
+  }
+
+  addGameFormula(cellLabel: string, formula: string[]){
+    this._gameFormulas.set(cellLabel, formula);
+  }
+
+  getGameFormula(): Map<string, string[]>{
+    return this._gameFormulas;
+  }
 
   /**
    * 

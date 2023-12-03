@@ -13,6 +13,7 @@ import SheetMemory from "./SheetMemory";
 import Cell from "./Cell";
 import FormulaBuilder from "./FormulaBuilder";
 import FormulaEvaluator from "./NewFormulaEvaluator";
+import { ErrorMessages } from "./GlobalDefinitions";
 
 
 
@@ -24,7 +25,7 @@ export default class CalculationManager {
     // get the computation order
     // compute the cells in the computation order
     // update the cells in the sheet memory
-    public evaluateSheet(sheetMemory: SheetMemory): void {
+    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNmbers: number[], gameCell: string, gameFormulas: Map<string, string[]>): void {
         // update the dependencies in the sheet
         this.updateDependencies(sheetMemory);
 
@@ -39,10 +40,45 @@ export default class CalculationManager {
             let currentCell = sheetMemory.getCellByLabel(cellLabel);
             let formula = currentCell.getFormula();
 
+
+            for (let i = 0; i < formula.length; i++) {
+                let currentToken = formula[i];
+                if (currentToken ) {
+                }
+            }
+
             calculator.evaluate(formula);
 
             let value = calculator.result
             let error = calculator.error;
+
+            if (gameToken && error == ""){
+                if (value != 24){
+                    value = 0;
+                    error = ErrorMessages.wrongAnswer;
+                }
+            }
+            
+
+            const numericInFormula = formula.map(Number).filter((element) => !isNaN(element));
+            const allNumbersInFormula = gameNmbers.every((numberGame) => numericInFormula.includes(numberGame));
+            const noDuplicateNumbers = new Set(numericInFormula).size === numericInFormula.length;
+
+            if ((!allNumbersInFormula || !noDuplicateNumbers) && error == ""){
+                value = 0;
+                error = ErrorMessages.repeatNumber;
+            }
+
+            if (gameFormulas.size != 0 && !gameFormulas.has(cellLabel) && value == 24){
+                for (const [, verifiedFormula] of gameFormulas) {
+                    const formulaCheck = this.checkFormula(formula, verifiedFormula);
+
+                    if (formulaCheck) {
+                        value = 0;
+                        error = ErrorMessages.repeatFormula;
+                    }
+                  }
+            }
 
             // update the cell in the sheet memory
             currentCell.setError(error);
@@ -51,6 +87,41 @@ export default class CalculationManager {
         }
     }
 
+    private checkFormula(formula: string[], gameFormula: string[]): boolean {
+        const operators = ["+", "-", "*", "/"];
+        let formulaOperators = [0, 0, 0, 0];
+        let gameFormulaOperators = [0, 0, 0, 0];
+        for (let i = 0; i < formula.length; i++) {
+            if (formula[i] == operators[0]) {
+                formulaOperators[0] += 1;
+            }
+            else if (formula[i] == operators[1]) {
+                formulaOperators[1] += 1;
+            }
+            else if (formula[i] == operators[2]) {
+                formulaOperators[2] += 1;
+            }
+            else if (formula[i] == operators[3]) {
+                formulaOperators[3] += 1;
+            }
+        }
+        for (let i = 0; i < gameFormula.length; i++) {
+            if (formula[i] == operators[0]) {
+                gameFormulaOperators[0] += 1;
+            }
+            else if (formula[i] == operators[1]) {
+                gameFormulaOperators[1] += 1;
+            }
+            else if (formula[i] == operators[2]) {
+                gameFormulaOperators[2] += 1;
+            }
+            else if (formula[i] == operators[3]) {
+                gameFormulaOperators[3] += 1;
+            }
+        }
+
+        return formulaOperators[0] == gameFormulaOperators[0] && formulaOperators[1] == gameFormulaOperators[1] && formulaOperators[2] == gameFormulaOperators[2] && formulaOperators[3] == gameFormulaOperators[3];
+    }
 
 
     /**
