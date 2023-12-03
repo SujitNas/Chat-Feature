@@ -12,6 +12,7 @@ import { DocumentTransport, CellTransport, CellTransportMap, ErrorMessages, User
 import { Cell } from '../Engine/Cell';
 
 import { PortsGlobal, LOCAL_SERVER_URL, RENDER_SERVER_URL } from '../ServerDataDefinitions';
+import ChatComponent from '../Components/ChatComponent';
 
 
 
@@ -31,6 +32,8 @@ class SpreadSheetClient {
     private _server: string = '';
     private _documentList: string[] = [];
 
+    private _gameMode: boolean = true;
+    private _gameFormulas: string[] = [];
 
     constructor(documentName: string, userName: string) {
         this._userName = userName;
@@ -144,6 +147,32 @@ class SpreadSheetClient {
         }
         return '';
     }
+
+    public getGameMode(): boolean {
+        return this._gameMode;
+    }
+
+    public getGameFormulaString(): string {
+        if (!this._document) {
+            return '';
+        }
+        const formula = this.getFormulaString();
+        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula)) {
+            //this.updateGameFormulas(formula);
+            return formula;
+        }
+        return '';
+    }
+
+    private checkFormula(formula: string): boolean {
+        return this._gameFormulas.includes(formula);
+    }
+
+    public updateGameFormulas(formula: string): void {
+        this._gameFormulas.push(formula);
+    }
+
+
 
     private _getCellValue(cellTransport: CellTransport): string {
         if (cellTransport.error === '') {
@@ -268,6 +297,7 @@ class SpreadSheetClient {
             ).then((document: DocumentTransport) => {
                 this._updateDocument(document);
             });
+
     }
 
     public addCell(cell: string): void {
