@@ -252,7 +252,7 @@ export class SpreadSheetController {
       this._memory.setCellByLabel(cellBeingEdited, cell);
     }
     this._calculationManager.evaluateSheet(this._memory);
-  }
+  } 
 
   /**
    * 

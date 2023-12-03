@@ -1,0 +1,47 @@
+.activateGameModeButton {
+    background-color: #008CBA; /* Blue background */
+    color: white; /* White text */
+    padding: 12px 20px; /* Comfortable padding */
+    margin: 5px; /* Spacing around the button */
+    border: none; /* No border */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Larger font size */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Subtle shadow for depth */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions for hover effects */
+  }
+  
+  .activateGameModeButton:hover {
+    background-color: #007BAC; /* Slightly darker blue on hover */
+    box-shadow: 0 6px 12px 0 rgba(0,0,0,0.3); /* Larger shadow on hover for a "lifting" effect */
+  }
+  
+  .activateGameModeButton:active {
+    background-color: #00688B; /* Even darker blue when the button is clicked */
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2); /* Smaller shadow when clicked */
+  }
+  .gameNumbersContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .gameNumbersContainer .numbers {
+    display: flex;
+  }
+  
+  .number {
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .target {
+    margin-left: 20px;
+    font-weight: bold;
+    color: #ff4500;
+  }
+  

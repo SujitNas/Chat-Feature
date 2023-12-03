@@ -4,10 +4,11 @@ import Status from "./Status";
 import KeyPad from "./KeyPad";
 import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
+import './SpreadSheet.css';
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
-
+import GameNumbers from "./GameNumbers";
 
 interface SpreadSheetProps {
   documentName: string;
@@ -31,6 +32,9 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetClient.getEditStatus());
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [serverSelected, setServerSelected] = useState("localhost");
+  const [isGameModeActive, setIsGameModeActive] = useState(false);
+  const gameNumbers = [3, 8, 15, 7]; // Replace with dynamic game numbers
+  const targetNumber = 24; // Replace with dynamic target number
 
 
   function updateDisplayValues(): void {
@@ -134,6 +138,14 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
         spreadSheetClient.clearFormula();
         break;
 
+      case ButtonNames.activateGameMode:
+        setIsGameModeActive(true);
+        break;
+      
+      case ButtonNames.deactivateGameMode:
+        setIsGameModeActive(false);
+        break;
+
     }
     // update the display values
     updateDisplayValues();
@@ -195,27 +207,66 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-      spreadSheetClient.requestViewByLabel(realCellLabel);
+    
 
       updateDisplayValues();
     }
 
   }
 
+  function onNumberOrOperationSelect(value: string): void {
+    if (isGameModeActive) {
+      console.log("Adding value to formula:", value);
+      spreadSheetClient.addToken(value); // Add the value to the formula
+      setCurrentlyEditing(true); 
+      
+      const newFormula = formulaString + value;
+      console.log("New formula:", newFormula);
+      setFormulaString(newFormula); // Update the formula
+      updateDisplayValues(); // Update the display values to reflect changes
+    } 
+  }
+
   return (
     <div>
+
+{isGameModeActive ? (
+    <button  className="activateGameModeButton" onClick={() => onCommandButtonClick(ButtonNames.deactivateGameMode)}>
+      Deactivate Game Mode
+    </button>
+  ) : (
+    <button className="activateGameModeButton" onClick={() => onCommandButtonClick(ButtonNames.activateGameMode)}>
+      Activate Game Mode
+    </button>
+  )}
       <Status statusString={statusString} userName={userName}></Status>
       <button onClick={returnToLoginPage}>Return to Login Page</button>
-      <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
-
-      {<SheetHolder cellsValues={cells}
-        onClick={onCellClick}
-        currentCell={currentCell}
-        currentlyEditing={currentlyEditing} ></SheetHolder>}
-      <KeyPad onButtonClick={onButtonClick}
-        onCommandButtonClick={onCommandButtonClick}
-        currentlyEditing={currentlyEditing}></KeyPad>
+      {isGameModeActive ? (
+        // Render game-specific components
+        <div className="gameMode">
+        <GameNumbers 
+          numbers={gameNumbers} 
+          target={targetNumber} 
+          onNumberOrOperationSelect={onNumberOrOperationSelect} 
+        />
+        {/* Render Formula and Result using spreadSheetClient data */}
+        <Formula formulaString={formulaString} resultString={resultString} />
+        </div>
+      ) : (
+        // Render regular spreadsheet components
+        <div className="spreadsheetMode">
+          <Formula formulaString={formulaString} resultString={resultString} />
+          <SheetHolder cellsValues={cells}
+            onClick={onCellClick}
+            currentCell={currentCell}
+            currentlyEditing={currentlyEditing} />
+          <KeyPad onButtonClick={onButtonClick}
+            onCommandButtonClick={onCommandButtonClick}
+            currentlyEditing={currentlyEditing} />
+        </div>
+      )}
       <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+     
     </div>
   )
 };

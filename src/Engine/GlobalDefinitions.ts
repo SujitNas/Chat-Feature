@@ -17,6 +17,8 @@ export const ButtonNames = {
   done: "=",
   allClear: "AC",
   clear: "C",
+  activateGameMode: "Activate Game Mode",
+  deactivateGameMode: "Deactivate Game Mode",
 }
 
 
@@ -49,4 +51,6 @@ export interface DocumentTransport {
   contributingUsers: UserEditing[];
   errorOccurred: string;
 }
+
+
 
