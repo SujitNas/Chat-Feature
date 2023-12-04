@@ -33,7 +33,7 @@ class SpreadSheetClient {
     private _documentList: string[] = [];
 
     private _loginUsers: string[] = [];
-
+    private _gameMode: boolean = false;
     private _gameFormulas: string[] = [];
 
     constructor(documentName: string, userName: string) {
@@ -116,6 +116,7 @@ class SpreadSheetClient {
         return this._userName;
     }
 
+    /*
     public checkDuplicateLoginUser(userName: string): boolean {
         if (this._loginUsers.includes(userName)) {
             return true;
@@ -133,7 +134,7 @@ class SpreadSheetClient {
             this._loginUsers.splice(index, 1);
         }
     }
-
+    */
     public set userName(userName: string) {
         this._userName = userName;
     }
@@ -184,6 +185,7 @@ class SpreadSheetClient {
             }).then((document: DocumentTransport) => {
                 this._updateDocument(document);
             });
+        this._gameMode = true;
     }
 
     public closeGameMode(): void {
@@ -201,6 +203,8 @@ class SpreadSheetClient {
             }).then((document: DocumentTransport) => {
                 this._updateDocument(document);
             });
+        this._gameFormulas = [];
+        this._gameMode = false;
     }
 
     public getGameNumbers(): number[] {
@@ -276,7 +280,7 @@ class SpreadSheetClient {
             return '';
         }
         const formula = this.getFormulaString();
-        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula)) {
+        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula) && this._gameMode) {
             //this.updateGameFormulas(formula);
             return formula;
         }
