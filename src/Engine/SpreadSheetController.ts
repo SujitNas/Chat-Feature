@@ -48,7 +48,7 @@ export class SpreadSheetController {
   // a per access error message
   private _errorOccurred: string = '';
 
-  private _gameNumbers: number[] = [1, 2, 3, 4];
+  private _gameNumbers: number[] = [];
   private _gameFormulas: Map<string, string[]> = new Map<string, string[]>;
   private _gameToken: boolean = false;
 
@@ -318,6 +318,7 @@ export class SpreadSheetController {
 
   activateGameMode(): void {
     this._gameToken = true;
+    this.generateGameNumbers();
   }
 
   deactivateGameMode(): void {
@@ -325,14 +326,15 @@ export class SpreadSheetController {
     this._gameFormulas.clear();
   }
 
-  generateGameNumbers(): void {
+  private generateGameNumbers(): void {
+    const sourceNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     this._gameNumbers = [];
-    for (let i = 0; i < 4; i++) {
-      const randomNumber = (Math.floor(Math.random() * 9) + 1);
-      if (!this._gameNumbers.includes(randomNumber)) {
-        this._gameNumbers.push(randomNumber);
-      }
+    while (this._gameNumbers.length < 4) {
+      const randomIndex = Math.floor(Math.random() * sourceNumbers.length);
+      const randomNumber = sourceNumbers.splice(randomIndex, 1)[0];
+      this._gameNumbers.push(randomNumber);
     }
+    
   }
 
   getGameNumbers(): number[] {

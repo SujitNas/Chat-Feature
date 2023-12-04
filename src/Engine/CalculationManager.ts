@@ -25,7 +25,7 @@ export default class CalculationManager {
     // get the computation order
     // compute the cells in the computation order
     // update the cells in the sheet memory
-    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNmbers: number[], gameCell: string, gameFormulas: Map<string, string[]>): void {
+    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNumbers: number[], gameCell: string, gameFormulas: Map<string, string[]>): void {
         // update the dependencies in the sheet
         this.updateDependencies(sheetMemory);
 
@@ -61,10 +61,9 @@ export default class CalculationManager {
             
 
             const numericInFormula = formula.map(Number).filter((element) => !isNaN(element));
-            const allNumbersInFormula = gameNmbers.every((numberGame) => numericInFormula.includes(numberGame));
             const noDuplicateNumbers = new Set(numericInFormula).size === numericInFormula.length;
 
-            if (gameToken && (!allNumbersInFormula || !noDuplicateNumbers) && error == ""){
+            if (gameToken  && error == "" && numericInFormula.length != 4){
                 value = 0;
                 error = ErrorMessages.repeatNumber;
             }
