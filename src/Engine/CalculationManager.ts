@@ -64,12 +64,12 @@ export default class CalculationManager {
             const allNumbersInFormula = gameNmbers.every((numberGame) => numericInFormula.includes(numberGame));
             const noDuplicateNumbers = new Set(numericInFormula).size === numericInFormula.length;
 
-            if ((!allNumbersInFormula || !noDuplicateNumbers) && error == ""){
+            if (gameToken && (!allNumbersInFormula || !noDuplicateNumbers) && error == ""){
                 value = 0;
                 error = ErrorMessages.repeatNumber;
             }
 
-            if (gameFormulas.size != 0 && !gameFormulas.has(cellLabel) && value == 24){
+            if (gameToken && gameFormulas.size != 0 && !gameFormulas.has(cellLabel) && value == 24){
                 for (const [, verifiedFormula] of gameFormulas) {
                     const formulaCheck = this.checkFormula(formula, verifiedFormula);
 

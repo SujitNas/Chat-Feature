@@ -46,14 +46,10 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
             window.sessionStorage.setItem('userName', userName);
             // set the user name
             
-            if (!spreadSheetClient.checkDuplicateLoginUser(userName)) {
-              setUserName(userName);
-              spreadSheetClient.userName = userName;
-              spreadSheetClient.addLoginUser();
-            }
-            else{
-              alert("User name already exists!");
-            }
+
+            setUserName(userName);
+            spreadSheetClient.userName = userName;
+
             
           }
         }} />
@@ -86,7 +82,7 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
 
   function logout() {
     // clear the user name
-    spreadSheetClient.removeLoginUser();
+    //spreadSheetClient.removeLoginUser();
     window.sessionStorage.setItem('userName', "");
     // reload the page
     window.location.reload();
