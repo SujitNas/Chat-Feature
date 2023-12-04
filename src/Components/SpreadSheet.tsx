@@ -38,7 +38,7 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
   const gameNumbers = spreadSheetClient.getGameNumbers();
    
   const targetNumber = 24; // Replace with dynamic target number
-  const [gameNumbers2, setGameNumbers2] = useState<number[]>([]);
+  //const [gameNumbers2, setGameNumbers2] = useState<number[]>([]);
 
   function updateDisplayValues(): void {
     spreadSheetClient.userName = userName;
@@ -86,14 +86,14 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
 
 
   
-
+  /*
   useEffect(() => {
     if (isGameModeActive) {
       // Generate the numbers when the game mode is activated
       const newGameNumbers = spreadSheetClient.generateNumbersAndOperationsFor24();
       setGameNumbers2(newGameNumbers);
     }
-  }, [isGameModeActive]);
+  }, [isGameModeActive]);*/
 
   function returnToLoginPage() {
 
@@ -164,8 +164,9 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
 
       case ButtonNames.activateGameMode:
         spreadSheetClient.setGameMode();
-        const newGameNumbers = spreadSheetClient.generateNumbersAndOperationsFor24();
-        setGameNumbers2(newGameNumbers);
+        /*
+        const newGameNumbers = spreadSheetClient.getGameNumbers();
+        setGameNumbers2(newGameNumbers);*/
         break;
       
       case ButtonNames.deactivateGameMode:
@@ -270,7 +271,7 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
         // Render game-specific components
         <div className="gameMode">
         <GameNumbers 
-          numbers={gameNumbers2} 
+          numbers={gameNumbers} 
           target={targetNumber} 
           onNumberOrOperationSelect={onNumberOrOperationSelect} 
           onCommandButtonClick={onCommandButtonClick}

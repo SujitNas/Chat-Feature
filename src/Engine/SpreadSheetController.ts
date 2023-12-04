@@ -317,8 +317,11 @@ export class SpreadSheetController {
   }
 
   activateGameMode(): void {
+    if (!this._gameToken){
+      this.generateGameNumbers();
+    }
     this._gameToken = true;
-    this.generateGameNumbers();
+    
   }
 
   deactivateGameMode(): void {
