@@ -100,6 +100,59 @@ app.put('/documents/:name', (req: express.Request, res: express.Response) => {
     res.status(200).send(document);
 });
 
+
+app.put('/document/activate/:name', (req: express.Request, res: express.Response) => {
+    console.log('Activate Game');
+    const name = req.params.name;
+    // get the userName from the body
+    console.log(`PUT /documents/activate/:name ${name}`);
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
+    // is this name valid?
+    const documentNames = documentHolder.getDocumentNames();
+
+    if (documentNames.indexOf(name) === -1) {
+        console.log(`Document ${name} not found, creating it`);
+        documentHolder.createDocument(name, 5, 8, userName);
+    }
+
+    documentHolder.activateGameMode(name, userName);
+    // get the document
+    const document = documentHolder.getDocumentJSON(name, userName);
+
+    res.status(200).send(document);
+});
+
+
+app.put('/document/deactivate/:name', (req: express.Request, res: express.Response) => {
+    console.log('Deactivate Game');
+    const name = req.params.name;
+    // get the userName from the body
+    console.log(`PUT /documents/deactivate/:name ${name}`);
+    const userName = req.body.userName;
+    if (!userName) {
+        res.status(400).send('userName is required');
+        return;
+    }
+    // is this name valid?
+    const documentNames = documentHolder.getDocumentNames();
+
+    if (documentNames.indexOf(name) === -1) {
+        console.log(`Document ${name} not found, creating it`);
+        documentHolder.createDocument(name, 5, 8, userName);
+    }
+
+    documentHolder.deactivateGameMode(name, userName);
+    // get the document
+    const document = documentHolder.getDocumentJSON(name, userName);
+
+    res.status(200).send(document);
+});
+
+
 app.get('/debug', (req: express.Request, res: express.Response) => {
     debug = !debug
     console.log(`debug is ${debug}`);

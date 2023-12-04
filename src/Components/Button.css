@@ -63,3 +63,17 @@
   width: 80px;
   height: 60px;
 }
+
+.button-game {
+  background-color: #abd426c5;
+  border: 1px solid #000000;
+  color: rgb(255, 255, 255);
+  padding: 3px 3px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: large;
+
+  width: 40px;
+  height: 30px;
+}

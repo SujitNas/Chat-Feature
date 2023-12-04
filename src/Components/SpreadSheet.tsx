@@ -9,10 +9,12 @@ import './SpreadSheet.css';
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
 import GameNumbers from "./GameNumbers";
+import ChatClient from "./ChatClient";
 
 interface SpreadSheetProps {
   documentName: string;
   spreadSheetClient: SpreadSheetClient;
+  chatClient: ChatClient;
 }
 
 /**
@@ -23,7 +25,7 @@ interface SpreadSheetProps {
 
 // create the client that talks to the backend.
 
-function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
+function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadSheetProps) {
   const [formulaString, setFormulaString] = useState(spreadSheetClient.getFormulaString())
   const [resultString, setResultString] = useState(spreadSheetClient.getResultString())
   const [cells, setCells] = useState(spreadSheetClient.getSheetDisplayStringsForGUI());
@@ -33,7 +35,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [serverSelected, setServerSelected] = useState("localhost");
   const [isGameModeActive, setIsGameModeActive] = useState(false);
-  const gameNumbers = [3, 8, 15, 7]; // Replace with dynamic game numbers
+  const gameNumbers = spreadSheetClient.getGameNumbers(); // Replace with dynamic game numbers
   const targetNumber = 24; // Replace with dynamic target number
 
 
@@ -49,6 +51,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     const errorOccurred = spreadSheetClient.getErrorOccurred();
     if (errorOccurred !== "") {
       alert(errorOccurred)
+    }
+    updateGameMode();
+    if ( spreadSheetClient.getGameFormulaString() !== '') {
+      chatClient.sendMessage(userName, spreadSheetClient.getGameFormulaString());
+      spreadSheetClient.updateGameFormulas(spreadSheetClient.getGameFormulaString());
     }
 
   }
@@ -100,6 +107,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     return true;
   }
 
+  function updateGameMode(): void {
+    const gameMode = spreadSheetClient.getGameMode();
+    setIsGameModeActive(gameMode);
+  }
+
   /**
    * 
    * @param event 
@@ -139,11 +151,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
         break;
 
       case ButtonNames.activateGameMode:
-        setIsGameModeActive(true);
+        spreadSheetClient.setGameMode();
         break;
       
       case ButtonNames.deactivateGameMode:
-        setIsGameModeActive(false);
+        spreadSheetClient.closeGameMode();
         break;
 
     }
@@ -207,8 +219,7 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     }
     // if the edit status is false then set the current cell to the clicked on cell
     else {
-    
-
+      spreadSheetClient.requestViewByLabel(realCellLabel);
       updateDisplayValues();
     }
 
@@ -248,9 +259,14 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
           numbers={gameNumbers} 
           target={targetNumber} 
           onNumberOrOperationSelect={onNumberOrOperationSelect} 
+          onCommandButtonClick={onCommandButtonClick}
         />
         {/* Render Formula and Result using spreadSheetClient data */}
         <Formula formulaString={formulaString} resultString={resultString} />
+        <SheetHolder cellsValues={cells}
+            onClick={onCellClick}
+            currentCell={currentCell}
+            currentlyEditing={currentlyEditing} />
         </div>
       ) : (
         // Render regular spreadsheet components

@@ -50,7 +50,7 @@ export class SpreadSheetController {
 
   private _gameNumbers: number[] = [1, 2, 3, 4];
   private _gameFormulas: Map<string, string[]> = new Map<string, string[]>;
-  private _gameToken: boolean = true;
+  private _gameToken: boolean = false;
 
   /**
    * constructor
@@ -316,9 +316,13 @@ export class SpreadSheetController {
 
   }
 
-  setGameMode(): void {
-    if (!this._gameToken)
+  activateGameMode(): void {
     this._gameToken = true;
+  }
+
+  deactivateGameMode(): void {
+    this._gameToken = false;
+    this._gameFormulas.clear();
   }
 
   generateGameNumbers(): void {
@@ -362,7 +366,14 @@ export class SpreadSheetController {
     container.formula = this.getFormulaStringForUser(user);
     container.result = this.getResultStringForUser(user);
     container.isEditing = userData.isEditing;
+    container.gameMode = this._gameToken;
+    
+    container.gameNumbers = '';
+    this._gameNumbers.forEach((value: number) => {
+      container.gameNumbers = container.gameNumbers + value.toString();
+    });
 
+  
     // add the error message if there is one
     container.errorOccurred = this._errorOccurred;
     // reset the error since we only report it once

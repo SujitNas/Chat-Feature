@@ -8,12 +8,14 @@ import SpreadSheet from './Components/SpreadSheet';
 import SpreadSheetClient from './Engine/SpreadSheetClient';
 import LoginPageComponent from './Components/LoginPageComponent';
 import ChatComponent from './Components/ChatComponent';
+import ChatClient from './Components/ChatClient';
 
 function App() {
 
 
   const [documentName, setDocumentName] = useState(getDocumentNameFromWindow());
   const spreadSheetClient = new SpreadSheetClient('documents', '');
+  const chatClient = new ChatClient();
   //const memoryUsage = process.memoryUsage();
   useEffect(() => {
     if (window.location.href) {
@@ -85,10 +87,10 @@ function App() {
         <div className="app-container">
           <div className="split-container">
             <div className="spreadsheet-container" style={{ flex: '2' }} >
-              <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient}  />
+              <SpreadSheet documentName={documentName} spreadSheetClient={spreadSheetClient} chatClient={chatClient} />
             </div>
             <div className="chat-container" style={{ flex: '1' }}>
-              <ChatComponent />
+              <ChatComponent chatClient = {chatClient}/>
             </div>
           </div>
         </div>

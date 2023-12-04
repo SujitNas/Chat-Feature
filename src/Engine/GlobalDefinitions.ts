@@ -53,6 +53,8 @@ export interface DocumentTransport {
   isEditing: boolean;
   contributingUsers: UserEditing[];
   errorOccurred: string;
+  gameMode: boolean;
+  gameNumbers: string;
 }
 
 
