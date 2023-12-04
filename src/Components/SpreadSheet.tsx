@@ -35,9 +35,10 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [serverSelected, setServerSelected] = useState("localhost");
   const [isGameModeActive, setIsGameModeActive] = useState(false);
-  const gameNumbers = spreadSheetClient.getGameNumbers(); // Replace with dynamic game numbers
+  const gameNumbers = spreadSheetClient.getGameNumbers();
+   
   const targetNumber = 24; // Replace with dynamic target number
-
+  const [gameNumbers2, setGameNumbers2] = useState<number[]>([]);
 
   function updateDisplayValues(): void {
     spreadSheetClient.userName = userName;
@@ -82,6 +83,17 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [currentlyEditing]);
+
+
+  
+
+  useEffect(() => {
+    if (isGameModeActive) {
+      // Generate the numbers when the game mode is activated
+      const newGameNumbers = spreadSheetClient.generateNumbersAndOperationsFor24();
+      setGameNumbers2(newGameNumbers);
+    }
+  }, [isGameModeActive]);
 
   function returnToLoginPage() {
 
@@ -152,6 +164,8 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
 
       case ButtonNames.activateGameMode:
         spreadSheetClient.setGameMode();
+        const newGameNumbers = spreadSheetClient.generateNumbersAndOperationsFor24();
+        setGameNumbers2(newGameNumbers);
         break;
       
       case ButtonNames.deactivateGameMode:
@@ -256,7 +270,7 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
         // Render game-specific components
         <div className="gameMode">
         <GameNumbers 
-          numbers={gameNumbers} 
+          numbers={gameNumbers2} 
           target={targetNumber} 
           onNumberOrOperationSelect={onNumberOrOperationSelect} 
           onCommandButtonClick={onCommandButtonClick}

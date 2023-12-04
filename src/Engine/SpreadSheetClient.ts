@@ -209,8 +209,62 @@ class SpreadSheetClient {
         for (let i = 0; i < gameNumbersString.length; i++) {
             gameNumbers[i] = parseInt(gameNumbersString[i]);
         }
+        
         return gameNumbers;
     }
+
+    public generateNumbersAndOperationsFor24(): number[] {
+        let numbers = [];
+        let operations = ['+', '-', '*', '/'];
+        let found = false;
+        let attempt = 0;
+        let maxAttempts = 1000; // Limit attempts to prevent infinite loops
+        let expression = ''
+        while (!found && attempt < maxAttempts) {
+            numbers = [];
+            for (let i = 0; i < 4; i++) {
+                numbers.push(Math.floor(Math.random() * 9) + 1); // Random numbers between 1 and 9
+            }
+    
+            // Try different combinations of operations
+            for (let op1 of operations) {
+                for (let op2 of operations) {
+                    for (let op3 of operations) {
+                        let expression = `(((${numbers[0]} ${op1} ${numbers[1]}) ${op2} ${numbers[2]}) ${op3} ${numbers[3]})`;
+                        try {
+                            if (eval(expression) === 24) {
+                                console.log(`Found: ${expression}`);
+                                found = true;
+                                break;
+                            }
+                        } catch (e) {
+                            // Catch division by zero or other mathematical errors
+                            continue;
+                        }
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
+    
+            attempt++;
+        }
+    
+        if (!found) {
+            console.log("No solution found within the maximum attempts");
+            return [1,2,3,4];
+        }
+        console.log("Numbers:", numbers);
+        console.log("Expression:", expression);
+        return numbers ;
+        //    return {
+        //     numbers: numbers,
+        //     expression: expression
+        // };
+    }
+    
+
+        
 
     public getGameMode(): boolean {
         return this._document.gameMode;
