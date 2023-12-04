@@ -4,4 +4,4 @@ export const PortsGlobal = {
 };
 
 export const LOCAL_SERVER_URL = "http://localhost";
-export const RENDER_SERVER_URL = "https://team404-demo.onrender.com";
+export const RENDER_SERVER_URL = "https://team404-server.onrender.com";
