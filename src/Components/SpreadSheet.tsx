@@ -33,10 +33,10 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [serverSelected, setServerSelected] = useState("localhost");
   const [isGameModeActive, setIsGameModeActive] = useState(false);
-  const gameNumbers = [3, 8, 15, 7]; // Replace with dynamic game numbers
+  //const gameNumbers = [3, 8, 15, 7]; // Replace with dynamic game numbers
+  const [gameNumbers, setGameNumbers] = useState(generateRandomNumbers()); // Replace with dynamic game numbers
   const targetNumber = 24; // Replace with dynamic target number
-
-
+  
   function updateDisplayValues(): void {
     spreadSheetClient.userName = userName;
     spreadSheetClient.documentName = documentName;
@@ -98,6 +98,22 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       return false;
     }
     return true;
+  }
+
+  function generateRandomNumbers(): number[] {
+    // Generate an array of four random numbers (example range: 1 to 20)
+    const randomNumbers = Array.from({ length: 4 }, () => Math.floor(Math.random() * 20) + 1);
+    return randomNumbers;
+  }
+
+  function toggleGameMode(): void {
+    if (isGameModeActive) {
+      setIsGameModeActive(false);
+    } else {
+      const randomGameNumbers = generateRandomNumbers();
+      setGameNumbers(randomGameNumbers);
+      setIsGameModeActive(true);
+    }
   }
 
   /**
