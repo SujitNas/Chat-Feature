@@ -87,9 +87,9 @@ export default class CalculationManager {
     }
 
     private checkFormula(formula: string[], gameFormula: string[]): boolean {
-        const operators = ["+", "-", "*", "/"];
-        let formulaOperators = [0, 0, 0, 0];
-        let gameFormulaOperators = [0, 0, 0, 0];
+        const operators = ["+", "-", "*", "/", "(", ")"];
+        let formulaOperators = [0, 0, 0, 0, 0, 0];
+        let gameFormulaOperators = [0, 0, 0, 0, 0, 0];
         for (let i = 0; i < formula.length; i++) {
             if (formula[i] == operators[0]) {
                 formulaOperators[0] += 1;
@@ -102,6 +102,12 @@ export default class CalculationManager {
             }
             else if (formula[i] == operators[3]) {
                 formulaOperators[3] += 1;
+            }
+            else if (formula[i] == operators[4]) {
+                formulaOperators[4] += 1;
+            }
+            else if (formula[i] == operators[5]) {
+                formulaOperators[5] += 1;
             }
         }
         for (let i = 0; i < gameFormula.length; i++) {
@@ -117,9 +123,15 @@ export default class CalculationManager {
             else if (formula[i] == operators[3]) {
                 gameFormulaOperators[3] += 1;
             }
+            else if (formula[i] == operators[4]) {
+                gameFormulaOperators[4] += 1;
+            }
+            else if (formula[i] == operators[5]) {
+                gameFormulaOperators[5] += 1;
+            }
         }
 
-        return formulaOperators[0] == gameFormulaOperators[0] && formulaOperators[1] == gameFormulaOperators[1] && formulaOperators[2] == gameFormulaOperators[2] && formulaOperators[3] == gameFormulaOperators[3];
+        return formulaOperators[0] == gameFormulaOperators[0] && formulaOperators[1] == gameFormulaOperators[1] && formulaOperators[2] == gameFormulaOperators[2] && formulaOperators[3] == gameFormulaOperators[3] && formulaOperators[4] == gameFormulaOperators[4] && formulaOperators[5] == gameFormulaOperators[5];
     }
 
 

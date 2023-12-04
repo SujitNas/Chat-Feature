@@ -217,6 +217,7 @@ class SpreadSheetClient {
         return gameNumbers;
     }
 
+    /*
     public generateNumbersAndOperationsFor24(): number[] {
         let numbers = [];
         let operations = ['+', '-', '*', '/'];
@@ -266,7 +267,7 @@ class SpreadSheetClient {
         //     expression: expression
         // };
     }
-    
+    */
 
         
 
@@ -280,7 +281,7 @@ class SpreadSheetClient {
             return '';
         }
         const formula = this.getFormulaString();
-        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula) && this._gameMode) {
+        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula)) {
             //this.updateGameFormulas(formula);
             return formula;
         }

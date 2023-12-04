@@ -54,7 +54,7 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
       alert(errorOccurred)
     }
     updateGameMode();
-    if ( spreadSheetClient.getGameFormulaString() !== '') {
+    if ( spreadSheetClient.getGameMode() && spreadSheetClient.getGameFormulaString() !== '') {
       chatClient.sendMessage(userName, spreadSheetClient.getGameFormulaString());
       spreadSheetClient.updateGameFormulas(spreadSheetClient.getGameFormulaString());
     }
