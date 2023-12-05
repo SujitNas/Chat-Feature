@@ -163,15 +163,23 @@ function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadShee
         break;
 
       case ButtonNames.activateGameMode:
+        if (userName === "gameHost") {
         spreadSheetClient.setGameMode();
+          break;
+        } else {
         /*
         const newGameNumbers = spreadSheetClient.getGameNumbers();
         setGameNumbers2(newGameNumbers);*/
         break;
+        }
       
       case ButtonNames.deactivateGameMode:
-        spreadSheetClient.closeGameMode();
+        if (userName === "gameHost") {
+          spreadSheetClient.closeGameMode();
+            break;
+          } else {
         break;
+          }
 
     }
     // update the display values
