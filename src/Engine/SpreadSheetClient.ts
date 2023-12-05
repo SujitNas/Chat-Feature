@@ -32,12 +32,8 @@ class SpreadSheetClient {
     private _server: string = '';
     private _documentList: string[] = [];
 
-<<<<<<< HEAD
-    private _gameMode: boolean = true;
-=======
     private _loginUsers: string[] = [];
     private _gameMode: boolean = false;
->>>>>>> integration
     private _gameFormulas: string[] = [];
 
     constructor(documentName: string, userName: string) {
@@ -174,12 +170,6 @@ class SpreadSheetClient {
         return '';
     }
 
-<<<<<<< HEAD
-    public getGameMode(): boolean {
-        return this._gameMode;
-    }
-
-=======
     public setGameMode(): void {
         let activateGameURL = `${this._baseURL}/document/activate/${this._documentName}`;
 
@@ -286,17 +276,12 @@ class SpreadSheetClient {
     }
 
 
->>>>>>> integration
     public getGameFormulaString(): string {
         if (!this._document) {
             return '';
         }
         const formula = this.getFormulaString();
-<<<<<<< HEAD
-        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula)) {
-=======
         if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula) && this._gameMode) {
->>>>>>> integration
             //this.updateGameFormulas(formula);
             return formula;
         }

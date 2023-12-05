@@ -20,10 +20,6 @@ function ChatComponent({chatClient} : ChatComponentProps) {
     const [messages, setMessages] = useState<MessageContainer[]>([]);
     const [mostRecentId, setMostRecentId] = useState<number>(-1);
     const [user, setUser] = useState<string>(window.sessionStorage.getItem('userName') || "");
-<<<<<<< HEAD
-    // const [user, setUser] = useState<string>("Jose");
-=======
->>>>>>> integration
     const [message, setMessage] = useState<string>("Type a message...");
     const bottomRef = useRef(null);
 
@@ -69,10 +65,7 @@ function ChatComponent({chatClient} : ChatComponentProps) {
     return (
         <div>
             <h1>Chats</h1>
-<<<<<<< HEAD
-=======
             
->>>>>>> integration
             <div className="scrollable-text-view">
                 {makeFormatedMessages()}
             </div>

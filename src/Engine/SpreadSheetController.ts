@@ -48,15 +48,9 @@ export class SpreadSheetController {
   // a per access error message
   private _errorOccurred: string = '';
 
-<<<<<<< HEAD
-  private _gameNumbers: number[] = [1, 2, 3, 4];
-  private _gameFormulas: Map<string, string[]> = new Map<string, string[]>;
-  private _gameToken: boolean = true;
-=======
   private _gameNumbers: number[] = [];
   private _gameFormulas: Map<string, string[]> = new Map<string, string[]>;
   private _gameToken: boolean = false;
->>>>>>> integration
 
   /**
    * constructor
@@ -322,8 +316,6 @@ export class SpreadSheetController {
 
   }
 
-<<<<<<< HEAD
-=======
   activateGameMode(): void {
     if (!this._gameToken){
       this.generateGameNumbers();
@@ -352,7 +344,6 @@ export class SpreadSheetController {
     return this._gameNumbers;
   }
 
->>>>>>> integration
   addGameFormula(cellLabel: string, formula: string[]){
     this._gameFormulas.set(cellLabel, formula);
   }
