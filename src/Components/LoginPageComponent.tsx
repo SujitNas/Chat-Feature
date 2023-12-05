@@ -45,8 +45,12 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
             let userName = (event.target as HTMLInputElement).value;
             window.sessionStorage.setItem('userName', userName);
             // set the user name
+            
+
             setUserName(userName);
             spreadSheetClient.userName = userName;
+
+            
           }
         }} />
     </div>
@@ -78,6 +82,7 @@ function LoginPageComponent({ spreadSheetClient }: LoginPageProps): JSX.Element 
 
   function logout() {
     // clear the user name
+    //spreadSheetClient.removeLoginUser();
     window.sessionStorage.setItem('userName', "");
     // reload the page
     window.location.reload();

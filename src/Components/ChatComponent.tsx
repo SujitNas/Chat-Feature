@@ -10,16 +10,20 @@ import e from "express";
 
 
 
-const chatClient = new ChatClient();
+//const chatClient = new ChatClient();
+interface ChatComponentProps {
+    chatClient: ChatClient;
+}
 
 
-function ChatComponent() {
+function ChatComponent({chatClient} : ChatComponentProps) {
     const [messages, setMessages] = useState<MessageContainer[]>([]);
     const [mostRecentId, setMostRecentId] = useState<number>(-1);
-    const [currentPage, setCurrentPage] = useState<number>(1);  // New state for pagination
-    const messagesPerPage = 20;
     const [user, setUser] = useState<string>(window.sessionStorage.getItem('userName') || "");
+<<<<<<< HEAD
     // const [user, setUser] = useState<string>("Jose");
+=======
+>>>>>>> integration
     const [message, setMessage] = useState<string>("Type a message...");
     const bottomRef = useRef(null);
 
@@ -39,14 +43,12 @@ function ChatComponent() {
         if (!updateNeeded) {
             return;
         }
-    
-        // Correctly slice the messages array
-        const endIndex = messagesPerPage * currentPage;
-        let newMessages = chatClient.messages.slice(0, endIndex);
-    
-        setMessages([...chatClient.messages]);
+
+        let newMessages = [...chatClient.messages];
+
+        setMessages(newMessages);
         setMostRecentId(newLastId);
-    }, [mostRecentId, currentPage, messagesPerPage]);
+    }, [mostRecentId, messages]);
 
     useEffect(() => {
         chatClient.setCallback(updateDisplay);
@@ -63,13 +65,14 @@ function ChatComponent() {
         });
         return formatedMessages;
     }
-    function loadMoreMessages() {
-        chatClient.getNextMessages();  // Increment the current page to load more messages
-    }
 
     return (
         <div>
             <h1>Chats</h1>
+<<<<<<< HEAD
+=======
+            
+>>>>>>> integration
             <div className="scrollable-text-view">
                 {makeFormatedMessages()}
             </div>
@@ -89,13 +92,8 @@ function ChatComponent() {
                     }
                 }}
             />
-            
-             {/* New button to load more messages */}
             <button onClick={() => chatClient.sendMessage(localUser, localMessage)}>Send</button>
-            <button onClick={() => {
-                loadMoreMessages();
-                
-            }}>Load More Messages</button>
+            <button onClick={() => chatClient.getNextMessages()}>Get Messages</button>
         </div>
     );
 }

@@ -107,6 +107,9 @@ export class DocumentHolder {
         }
     }
 
+
+
+
     /**
      * a function for development for the tests.  thisis called in response to a /documents/reset call
      */
@@ -147,6 +150,23 @@ export class DocumentHolder {
 
 
     }
+
+    public activateGameMode(docName: string, user: string): string {
+        let document = this._documents.get(docName);
+        document!.activateGameMode();
+        // get the json string for the controler
+        const documentJSON = this.getDocumentJSON(docName, user);
+        return documentJSON;
+    }
+
+    public deactivateGameMode(docName: string, user: string): string {
+        let document = this._documents.get(docName);
+        document!.deactivateGameMode();
+        // get the json string for the controler
+        const documentJSON = this.getDocumentJSON(docName, user);
+        return documentJSON;
+    }
+
     public requestViewAccess(docName: string, cellLabel: string, user: string) {
         let document = this._documents.get(docName);
 

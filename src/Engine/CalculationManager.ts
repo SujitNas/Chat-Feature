@@ -25,7 +25,11 @@ export default class CalculationManager {
     // get the computation order
     // compute the cells in the computation order
     // update the cells in the sheet memory
+<<<<<<< HEAD
     public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNmbers: number[], gameCell: string, gameFormulas: Map<string, string[]>): void {
+=======
+    public evaluateSheet(sheetMemory: SheetMemory, gameToken: boolean, gameNumbers: number[], gameCell: string, gameFormulas: Map<string, string[]>): void {
+>>>>>>> integration
         // update the dependencies in the sheet
         this.updateDependencies(sheetMemory);
 
@@ -61,15 +65,25 @@ export default class CalculationManager {
             
 
             const numericInFormula = formula.map(Number).filter((element) => !isNaN(element));
+<<<<<<< HEAD
             const allNumbersInFormula = gameNmbers.every((numberGame) => numericInFormula.includes(numberGame));
             const noDuplicateNumbers = new Set(numericInFormula).size === numericInFormula.length;
 
             if ((!allNumbersInFormula || !noDuplicateNumbers) && error == ""){
+=======
+            const noDuplicateNumbers = new Set(numericInFormula).size === numericInFormula.length;
+
+            if (gameToken  && error == "" && numericInFormula.length != 4){
+>>>>>>> integration
                 value = 0;
                 error = ErrorMessages.repeatNumber;
             }
 
+<<<<<<< HEAD
             if (gameFormulas.size != 0 && !gameFormulas.has(cellLabel) && value == 24){
+=======
+            if (gameToken && gameFormulas.size != 0 && !gameFormulas.has(cellLabel) && value == 24){
+>>>>>>> integration
                 for (const [, verifiedFormula] of gameFormulas) {
                     const formulaCheck = this.checkFormula(formula, verifiedFormula);
 
@@ -88,9 +102,15 @@ export default class CalculationManager {
     }
 
     private checkFormula(formula: string[], gameFormula: string[]): boolean {
+<<<<<<< HEAD
         const operators = ["+", "-", "*", "/"];
         let formulaOperators = [0, 0, 0, 0];
         let gameFormulaOperators = [0, 0, 0, 0];
+=======
+        const operators = ["+", "-", "*", "/", "(", ")"];
+        let formulaOperators = [0, 0, 0, 0, 0, 0];
+        let gameFormulaOperators = [0, 0, 0, 0, 0, 0];
+>>>>>>> integration
         for (let i = 0; i < formula.length; i++) {
             if (formula[i] == operators[0]) {
                 formulaOperators[0] += 1;
@@ -104,6 +124,15 @@ export default class CalculationManager {
             else if (formula[i] == operators[3]) {
                 formulaOperators[3] += 1;
             }
+<<<<<<< HEAD
+=======
+            else if (formula[i] == operators[4]) {
+                formulaOperators[4] += 1;
+            }
+            else if (formula[i] == operators[5]) {
+                formulaOperators[5] += 1;
+            }
+>>>>>>> integration
         }
         for (let i = 0; i < gameFormula.length; i++) {
             if (formula[i] == operators[0]) {
@@ -118,9 +147,21 @@ export default class CalculationManager {
             else if (formula[i] == operators[3]) {
                 gameFormulaOperators[3] += 1;
             }
+<<<<<<< HEAD
         }
 
         return formulaOperators[0] == gameFormulaOperators[0] && formulaOperators[1] == gameFormulaOperators[1] && formulaOperators[2] == gameFormulaOperators[2] && formulaOperators[3] == gameFormulaOperators[3];
+=======
+            else if (formula[i] == operators[4]) {
+                gameFormulaOperators[4] += 1;
+            }
+            else if (formula[i] == operators[5]) {
+                gameFormulaOperators[5] += 1;
+            }
+        }
+
+        return formulaOperators[0] == gameFormulaOperators[0] && formulaOperators[1] == gameFormulaOperators[1] && formulaOperators[2] == gameFormulaOperators[2] && formulaOperators[3] == gameFormulaOperators[3] && formulaOperators[4] == gameFormulaOperators[4] && formulaOperators[5] == gameFormulaOperators[5];
+>>>>>>> integration
     }
 
 

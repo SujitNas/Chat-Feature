@@ -32,7 +32,12 @@ class SpreadSheetClient {
     private _server: string = '';
     private _documentList: string[] = [];
 
+<<<<<<< HEAD
     private _gameMode: boolean = true;
+=======
+    private _loginUsers: string[] = [];
+    private _gameMode: boolean = false;
+>>>>>>> integration
     private _gameFormulas: string[] = [];
 
     constructor(documentName: string, userName: string) {
@@ -66,7 +71,9 @@ class SpreadSheetClient {
             isEditing: false,
             cells: new Map<string, CellTransport>(),
             contributingUsers: [],
-            errorOccurred: ''
+            errorOccurred: '',
+            gameMode: false,
+            gameNumbers: ''
         };
         for (let row = 0; row < document.rows; row++) {
             for (let column = 0; column < document.columns; column++) {
@@ -113,6 +120,25 @@ class SpreadSheetClient {
         return this._userName;
     }
 
+    /*
+    public checkDuplicateLoginUser(userName: string): boolean {
+        if (this._loginUsers.includes(userName)) {
+            return true;
+        }
+        return false;
+    }
+
+    public addLoginUser(): void {
+        this._loginUsers.push(this._userName);
+    }
+
+    public removeLoginUser(): void {
+        const index = this._loginUsers.indexOf(this._userName);
+        if (index > -1) {
+            this._loginUsers.splice(index, 1);
+        }
+    }
+    */
     public set userName(userName: string) {
         this._userName = userName;
     }
@@ -148,16 +174,129 @@ class SpreadSheetClient {
         return '';
     }
 
+<<<<<<< HEAD
     public getGameMode(): boolean {
         return this._gameMode;
     }
 
+=======
+    public setGameMode(): void {
+        let activateGameURL = `${this._baseURL}/document/activate/${this._documentName}`;
+
+        fetch(activateGameURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                return response.json() as Promise<DocumentTransport>;
+            }).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+            });
+        this._gameMode = true;
+    }
+
+    public closeGameMode(): void {
+        let deactivateGameURL = `${this._baseURL}/document/deactivate/${this._documentName}`;
+
+        fetch(deactivateGameURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+            .then(response => {
+                return response.json() as Promise<DocumentTransport>;
+            }).then((document: DocumentTransport) => {
+                this._updateDocument(document);
+            });
+        this._gameFormulas = [];
+        this._gameMode = false;
+    }
+
+    public getGameNumbers(): number[] {
+        const gameNumbersString = this._document.gameNumbers;
+        const gameNumbers: number[] = [];
+        for (let i = 0; i < gameNumbersString.length; i++) {
+            gameNumbers[i] = parseInt(gameNumbersString[i]);
+        }
+        
+        return gameNumbers;
+    }
+
+    /*
+    public generateNumbersAndOperationsFor24(): number[] {
+        let numbers = [];
+        let operations = ['+', '-', '*', '/'];
+        let found = false;
+        let attempt = 0;
+        let maxAttempts = 1000; // Limit attempts to prevent infinite loops
+        let expression = ''
+        while (!found && attempt < maxAttempts) {
+            numbers = [];
+            for (let i = 0; i < 4; i++) {
+                numbers.push(Math.floor(Math.random() * 9) + 1); // Random numbers between 1 and 9
+            }
+    
+            // Try different combinations of operations
+            for (let op1 of operations) {
+                for (let op2 of operations) {
+                    for (let op3 of operations) {
+                        let expression = `(((${numbers[0]} ${op1} ${numbers[1]}) ${op2} ${numbers[2]}) ${op3} ${numbers[3]})`;
+                        try {
+                            if (eval(expression) === 24) {
+                                console.log(`Found: ${expression}`);
+                                found = true;
+                                break;
+                            }
+                        } catch (e) {
+                            // Catch division by zero or other mathematical errors
+                            continue;
+                        }
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
+    
+            attempt++;
+        }
+    
+        if (!found) {
+            console.log("No solution found within the maximum attempts");
+            return [1,2,3,4];
+        }
+        console.log("Numbers:", numbers);
+        console.log("Expression:", expression);
+        return numbers ;
+        //    return {
+        //     numbers: numbers,
+        //     expression: expression
+        // };
+    }
+    */
+
+        
+
+    public getGameMode(): boolean {
+        return this._document.gameMode;
+    }
+
+
+>>>>>>> integration
     public getGameFormulaString(): string {
         if (!this._document) {
             return '';
         }
         const formula = this.getFormulaString();
+<<<<<<< HEAD
         if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula)) {
+=======
+        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula) && this._gameMode) {
+>>>>>>> integration
             //this.updateGameFormulas(formula);
             return formula;
         }
@@ -202,6 +341,7 @@ class SpreadSheetClient {
         const cells: Map<string, CellTransport> = this._document.cells as Map<string, CellTransport>;
         const sheetDisplayStrings: string[][] = [];
         // create a 2d array of strings that is [row][column]
+        const gameToken = this._document.gameMode.toString();
 
 
 
@@ -461,6 +601,8 @@ class SpreadSheetClient {
         const isEditing = document.isEditing;
         const contributingUsers = document.contributingUsers;
         const errorOccurred = document.errorOccurred;
+        const gameMode = document.gameMode;
+        const gameNumbers = document.gameNumbers;
 
 
         // create the document
@@ -474,7 +616,9 @@ class SpreadSheetClient {
             isEditing: isEditing,
             cells: new Map<string, CellTransport>(),
             contributingUsers: contributingUsers,
-            errorOccurred: errorOccurred
+            errorOccurred: errorOccurred,
+            gameMode: gameMode,
+            gameNumbers: gameNumbers
         };
         // create the cells
         const cells = document.cells as unknown as CellTransportMap;

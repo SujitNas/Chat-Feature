@@ -4,14 +4,17 @@ import Status from "./Status";
 import KeyPad from "./KeyPad";
 import SpreadSheetClient from "../Engine/SpreadSheetClient";
 import SheetHolder from "./SheetHolder";
+import './SpreadSheet.css';
 
 import { ButtonNames } from "../Engine/GlobalDefinitions";
 import ServerSelector from "./ServerSelector";
-
+import GameNumbers from "./GameNumbers";
+import ChatClient from "./ChatClient";
 
 interface SpreadSheetProps {
   documentName: string;
   spreadSheetClient: SpreadSheetClient;
+  chatClient: ChatClient;
 }
 
 /**
@@ -22,7 +25,7 @@ interface SpreadSheetProps {
 
 // create the client that talks to the backend.
 
-function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
+function SpreadSheet({ documentName, spreadSheetClient, chatClient }: SpreadSheetProps) {
   const [formulaString, setFormulaString] = useState(spreadSheetClient.getFormulaString())
   const [resultString, setResultString] = useState(spreadSheetClient.getResultString())
   const [cells, setCells] = useState(spreadSheetClient.getSheetDisplayStringsForGUI());
@@ -31,7 +34,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
   const [currentlyEditing, setCurrentlyEditing] = useState(spreadSheetClient.getEditStatus());
   const [userName, setUserName] = useState(window.sessionStorage.getItem('userName') || "");
   const [serverSelected, setServerSelected] = useState("localhost");
-
+  const [isGameModeActive, setIsGameModeActive] = useState(false);
+  const gameNumbers = spreadSheetClient.getGameNumbers();
+   
+  const targetNumber = 24; // Replace with dynamic target number
+  //const [gameNumbers2, setGameNumbers2] = useState<number[]>([]);
 
   function updateDisplayValues(): void {
     spreadSheetClient.userName = userName;
@@ -45,6 +52,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     const errorOccurred = spreadSheetClient.getErrorOccurred();
     if (errorOccurred !== "") {
       alert(errorOccurred)
+    }
+    updateGameMode();
+    if ( spreadSheetClient.getGameMode() && spreadSheetClient.getGameFormulaString() !== '') {
+      chatClient.sendMessage(userName, spreadSheetClient.getGameFormulaString());
+      spreadSheetClient.updateGameFormulas(spreadSheetClient.getGameFormulaString());
     }
 
   }
@@ -72,6 +84,17 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     };
   }, [currentlyEditing]);
 
+
+  
+  /*
+  useEffect(() => {
+    if (isGameModeActive) {
+      // Generate the numbers when the game mode is activated
+      const newGameNumbers = spreadSheetClient.generateNumbersAndOperationsFor24();
+      setGameNumbers2(newGameNumbers);
+    }
+  }, [isGameModeActive]);*/
+
   function returnToLoginPage() {
 
     // set the document name
@@ -94,6 +117,11 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       return false;
     }
     return true;
+  }
+
+  function updateGameMode(): void {
+    const gameMode = spreadSheetClient.getGameMode();
+    setIsGameModeActive(gameMode);
   }
 
   /**
@@ -133,6 +161,25 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
       case ButtonNames.allClear:
         spreadSheetClient.clearFormula();
         break;
+
+      case ButtonNames.activateGameMode:
+        if (userName === "gameHost") {
+        spreadSheetClient.setGameMode();
+          break;
+        } else {
+        /*
+        const newGameNumbers = spreadSheetClient.getGameNumbers();
+        setGameNumbers2(newGameNumbers);*/
+        break;
+        }
+      
+      case ButtonNames.deactivateGameMode:
+        if (userName === "gameHost") {
+          spreadSheetClient.closeGameMode();
+            break;
+          } else {
+        break;
+          }
 
     }
     // update the display values
@@ -196,26 +243,69 @@ function SpreadSheet({ documentName, spreadSheetClient }: SpreadSheetProps) {
     // if the edit status is false then set the current cell to the clicked on cell
     else {
       spreadSheetClient.requestViewByLabel(realCellLabel);
-
       updateDisplayValues();
     }
 
   }
 
+  function onNumberOrOperationSelect(value: string): void {
+    if (isGameModeActive) {
+      console.log("Adding value to formula:", value);
+      spreadSheetClient.addToken(value); // Add the value to the formula
+      setCurrentlyEditing(true); 
+      
+      const newFormula = formulaString + value;
+      console.log("New formula:", newFormula);
+      setFormulaString(newFormula); // Update the formula
+      updateDisplayValues(); // Update the display values to reflect changes
+    } 
+  }
+
   return (
     <div>
+
+{isGameModeActive ? (
+    <button  className="activateGameModeButton" onClick={() => onCommandButtonClick(ButtonNames.deactivateGameMode)}>
+      Deactivate Game Mode
+    </button>
+  ) : (
+    <button className="activateGameModeButton" onClick={() => onCommandButtonClick(ButtonNames.activateGameMode)}>
+      Activate Game Mode
+    </button>
+  )}
       <Status statusString={statusString} userName={userName}></Status>
       <button onClick={returnToLoginPage}>Return to Login Page</button>
-      <Formula formulaString={formulaString} resultString={resultString}  ></Formula>
-
-      {<SheetHolder cellsValues={cells}
-        onClick={onCellClick}
-        currentCell={currentCell}
-        currentlyEditing={currentlyEditing} ></SheetHolder>}
-      <KeyPad onButtonClick={onButtonClick}
-        onCommandButtonClick={onCommandButtonClick}
-        currentlyEditing={currentlyEditing}></KeyPad>
+      {isGameModeActive ? (
+        // Render game-specific components
+        <div className="gameMode">
+        <GameNumbers 
+          numbers={gameNumbers} 
+          target={targetNumber} 
+          onNumberOrOperationSelect={onNumberOrOperationSelect} 
+          onCommandButtonClick={onCommandButtonClick}
+        />
+        {/* Render Formula and Result using spreadSheetClient data */}
+        <Formula formulaString={formulaString} resultString={resultString} />
+        <SheetHolder cellsValues={cells}
+            onClick={onCellClick}
+            currentCell={currentCell}
+            currentlyEditing={currentlyEditing} />
+        </div>
+      ) : (
+        // Render regular spreadsheet components
+        <div className="spreadsheetMode">
+          <Formula formulaString={formulaString} resultString={resultString} />
+          <SheetHolder cellsValues={cells}
+            onClick={onCellClick}
+            currentCell={currentCell}
+            currentlyEditing={currentlyEditing} />
+          <KeyPad onButtonClick={onButtonClick}
+            onCommandButtonClick={onCommandButtonClick}
+            currentlyEditing={currentlyEditing} />
+        </div>
+      )}
       <ServerSelector serverSelector={serverSelector} serverSelected={serverSelected} />
+     
     </div>
   )
 };
