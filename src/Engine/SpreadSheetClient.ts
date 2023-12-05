@@ -281,7 +281,7 @@ class SpreadSheetClient {
             return '';
         }
         const formula = this.getFormulaString();
-        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula)) {
+        if (this.getResultString() === "24" && this._document.isEditing && !this.checkFormula(formula) && this._gameMode) {
             //this.updateGameFormulas(formula);
             return formula;
         }
